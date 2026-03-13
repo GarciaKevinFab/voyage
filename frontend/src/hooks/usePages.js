@@ -23,6 +23,7 @@ export default function usePages(bookId) {
     addPage,
     removePage: removePageFromStore,
     updatePageInStore,
+    currentBook,
   } = useBookStore();
   const { setLoading, addToast } = useAppStore();
 
@@ -73,9 +74,22 @@ export default function usePages(bookId) {
 
         // Try to auto-generate a caption in the background
         try {
-          const captioned = await api.getCaption(bookId, newPage.id);
-          updatePageInStore(newPage.id, captioned);
-          await cachePage({ ...newPage, ...captioned });
+          const reader = new FileReader();
+          const base64 = await new Promise((resolve) => {
+            reader.onloadend = () => resolve(reader.result.split(',')[1]);
+            reader.readAsDataURL(compressed);
+          });
+          const captionResult = await api.getCaption({
+            image_base64: base64,
+            city: currentBook?.city || '',
+            country: currentBook?.country || '',
+          });
+          if (captionResult?.caption) {
+            const captionUpdate = { caption: captionResult.caption };
+            await api.updatePage(newPage.id, captionUpdate);
+            updatePageInStore(newPage.id, captionUpdate);
+            await cachePage({ ...newPage, ...captionUpdate });
+          }
         } catch {
           // Caption generation is non-critical
           console.warn('Caption generation failed, skipping');
@@ -97,7 +111,7 @@ export default function usePages(bookId) {
   const updateExistingPage = useCallback(
     async (pageId, data) => {
       try {
-        const updated = await api.updatePage(bookId, pageId, data);
+        const updated = await api.updatePage(pageId, data);
         updatePageInStore(pageId, updated);
         await cachePage(updated);
         return updated;
@@ -113,7 +127,7 @@ export default function usePages(bookId) {
   const deleteExistingPage = useCallback(
     async (pageId) => {
       try {
-        await api.deletePage(bookId, pageId);
+        await api.deletePage(pageId);
         removePageFromStore(pageId);
         await removeCachedPage(pageId);
         addToast({ type: 'success', message: 'Page removed' });
@@ -129,7 +143,7 @@ export default function usePages(bookId) {
   const reorderExistingPages = useCallback(
     async (orderedIds) => {
       try {
-        const updated = await api.reorderPages(bookId, orderedIds);
+        const updated = await api.reorderPages(orderedIds);
         setPages(updated);
         await cachePages(bookId, updated);
       } catch (err) {

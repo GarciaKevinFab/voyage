@@ -118,10 +118,28 @@ export default function BookCreatorScreen({ isOpen, onClose, onBookCreated }) {
 
       // 2. Generate cover and intro in parallel
       try {
-        await Promise.all([
-          api.getCover(newBook.id),
-          api.getIntro(newBook.id),
+        const [coverResult, introResult] = await Promise.allSettled([
+          api.getCover(newBook.city, newBook.country),
+          api.getIntro({
+            city: newBook.city,
+            country: newBook.country,
+            start_date: newBook.start_date,
+            end_date: newBook.end_date,
+            subtitle: newBook.subtitle,
+          }),
         ]);
+
+        // Update book with generated cover/intro
+        const updates = {};
+        if (coverResult.status === 'fulfilled' && coverResult.value?.url) {
+          updates.cover_url = coverResult.value.url;
+        }
+        if (introResult.status === 'fulfilled' && introResult.value?.text) {
+          updates.intro = introResult.value.text;
+        }
+        if (Object.keys(updates).length > 0) {
+          await api.updateBook(newBook.id, updates);
+        }
       } catch (genErr) {
         console.warn('AI generation partial failure:', genErr);
       }

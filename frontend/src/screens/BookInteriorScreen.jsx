@@ -92,15 +92,25 @@ export default function BookInteriorScreen() {
   const handleGenerateEpilogue = useCallback(async () => {
     setLoading(true, 'Writing epilogue...');
     try {
-      const result = await api.getEpilogue(id);
-      setCurrentBook({ ...currentBook, ...result });
+      const captions = (pages || []).map((p) => p.caption).filter(Boolean);
+      const result = await api.getEpilogue({
+        city: currentBook?.city || '',
+        country: currentBook?.country || '',
+        intro: currentBook?.intro || '',
+        captions,
+      });
+      const epilogueText = result?.epilogue || result?.text || '';
+      if (epilogueText) {
+        const updated = await api.updateBook(id, { epilogue: epilogueText });
+        setCurrentBook({ ...currentBook, ...updated });
+      }
       addToast({ type: 'success', message: 'Epilogue generated' });
     } catch {
       addToast({ type: 'error', message: 'Failed to generate epilogue' });
     } finally {
       setLoading(false);
     }
-  }, [id, currentBook, setCurrentBook, setLoading, addToast]);
+  }, [id, currentBook, pages, setCurrentBook, setLoading, addToast]);
 
   const handleInlineEdit = useCallback((field, value) => {
     setEditingField(field);
