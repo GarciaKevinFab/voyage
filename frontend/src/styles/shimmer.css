@@ -1,0 +1,22 @@
+@keyframes goldShimmer {
+  0%   { background-position: -400% center; }
+  100% { background-position: 400% center; }
+}
+
+.shimmer-gold {
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold), var(--gold-dark));
+  background-size: 400% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shimmer-gold-active {
+  animation: goldShimmer 2s linear infinite;
+}
+
+.shimmer-gold-bg {
+  background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold), var(--gold-dark));
+  background-size: 400% auto;
+  animation: goldShimmer 2s linear infinite;
+}

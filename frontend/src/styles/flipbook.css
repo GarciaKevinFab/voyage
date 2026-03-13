@@ -1,0 +1,79 @@
+/* Page turn forward */
+@keyframes pageTurnForward {
+  0%   { transform: perspective(2000px) rotateY(0deg); box-shadow: none; }
+  40%  { box-shadow: -25px 0 50px rgba(0,0,0,0.5); }
+  100% { transform: perspective(2000px) rotateY(-180deg); box-shadow: none; }
+}
+
+/* Page turn backward */
+@keyframes pageTurnBack {
+  0%   { transform: perspective(2000px) rotateY(-180deg); box-shadow: none; }
+  40%  { box-shadow: -25px 0 50px rgba(0,0,0,0.5); }
+  100% { transform: perspective(2000px) rotateY(0deg); box-shadow: none; }
+}
+
+/* Book open from shelf */
+@keyframes bookOpen {
+  0%   { transform: perspective(1200px) rotateY(0deg) translateZ(0); }
+  50%  { transform: perspective(1200px) rotateY(-90deg) translateZ(50px); }
+  100% { transform: perspective(1200px) rotateY(-180deg) translateZ(0); }
+}
+
+/* New spine entering shelf */
+@keyframes spineEntry {
+  0%   { transform: translateX(120px) rotateY(-20deg); opacity: 0; }
+  65%  { transform: translateX(-12px) rotateY(3deg); opacity: 1; }
+  82%  { transform: translateX(6px) rotateY(-1deg); }
+  100% { transform: translateX(0) rotateY(0deg); }
+}
+
+/* Dust particles */
+@keyframes dustParticle {
+  0%   { transform: translate(0, 0) scale(1.2); opacity: 0.8; }
+  30%  { opacity: 0.6; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+/* Letter by letter reveal */
+@keyframes letterReveal {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Pin drop with bounce */
+@keyframes pinDrop {
+  0%   { transform: translateY(-60px) scale(0.6); opacity: 0; }
+  55%  { transform: translateY(8px) scale(1.15); opacity: 1; }
+  75%  { transform: translateY(-4px) scale(0.92); }
+  90%  { transform: translateY(2px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Modal entrance */
+@keyframes modalIn {
+  from { transform: scale(0.92) translateY(8px); opacity: 0; }
+  to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* Gold pulse loading */
+@keyframes goldPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50%       { opacity: 1.0; transform: scale(1.0); }
+}
+
+/* Page turn classes */
+.page-turning-forward {
+  animation: pageTurnForward 700ms var(--ease-luxury) forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+.page-turning-backward {
+  animation: pageTurnBack 700ms var(--ease-luxury) forwards;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+.page-back {
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  background: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(201,169,110,0.04) 28px, rgba(201,169,110,0.04) 29px), var(--cream);
+}

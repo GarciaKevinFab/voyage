@@ -1,0 +1,16 @@
+@keyframes floatUp {
+  0%   { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  5%   { opacity: var(--max-opacity); }
+  90%  { opacity: calc(var(--max-opacity) * 0.5); }
+  100% { transform: translateY(-8vh) rotate(var(--rot)); opacity: 0; }
+}
+
+.particle {
+  position: fixed;
+  pointer-events: none;
+  background: var(--cream);
+  animation: floatUp var(--duration) linear infinite;
+  animation-delay: var(--delay);
+  opacity: 0;
+  z-index: 1;
+}
