@@ -6,8 +6,8 @@ sqlalchemy==2.0.30
 python-multipart==0.0.9
 cloudinary==1.40.0
 reportlab==4.2.0
-qrcode[pil]==7.4.2
-Pillow==10.3.0
+qrcode==7.4.2
+Pillow==10.4.0
 python-dotenv==1.0.1
 pydantic==2.7.1
 aiosqlite==0.20.0
