@@ -353,7 +353,14 @@ export default function BookshelfScreen() {
               strokeLinejoin="round"
               style={{ transition: 'stroke 300ms ease' }}
             >
-              <path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 01-.837.276c-.47-.07-.802-.452-.968-.878a2.074 2.074 0 00-1.941-1.313c-1.13 0-2.049.919-2.049 2.049 0 .53-.21 1.04-.586 1.414l-.013.014A2 2 0 0111.878 18H9.122a2 2 0 01-1.414-.586l-.013-.014a2 2 0 01-.586-1.414c0-1.13-.919-2.049-2.049-2.049a2.074 2.074 0 00-1.941 1.313c-.166.426-.498.808-.968.878a.98.98 0 01-.837-.276L.586 15.124A2.41 2.41 0 010 13.42c0-.617.236-1.234.706-1.704L2.272 10.15a1.007 1.007 0 00.29-.878A2.074 2.074 0 00.62 7.331C.49 7.261.374 7.125.374 6.948V5.102c0-.177.116-.313.245-.383A2.074 2.074 0 002.56 2.777a1.007 1.007 0 00-.289-.878L.706 .331A2.41 2.41 0 010 .331" />
+              <rect x="2" y="2" width="9" height="9" rx="1" />
+              <rect x="13" y="2" width="9" height="9" rx="1" />
+              <rect x="2" y="13" width="9" height="9" rx="1" />
+              <rect x="13" y="13" width="9" height="9" rx="1" />
+              <line x1="11" y1="6.5" x2="13" y2="6.5" />
+              <line x1="6.5" y1="11" x2="6.5" y2="13" />
+              <line x1="17.5" y1="11" x2="17.5" y2="13" />
+              <line x1="11" y1="17.5" x2="13" y2="17.5" />
             </svg>
           </button>
 
@@ -370,10 +377,6 @@ export default function BookshelfScreen() {
               padding: '8px',
               transition: 'opacity 300ms ease',
               opacity: tetrisHovered ? 1 : 0.5,
-              fontFamily: "'Josefin Sans', sans-serif",
-              fontSize: '18px',
-              color: tetrisHovered ? '#C9A96E' : '#8A8478',
-              lineHeight: 1,
             }}
           >
             <svg
@@ -383,9 +386,10 @@ export default function BookshelfScreen() {
               fill={tetrisHovered ? '#C9A96E' : '#8A8478'}
               style={{ transition: 'fill 300ms ease' }}
             >
-              <rect x="2" y="2" width="8" height="8" rx="1" />
-              <rect x="12" y="2" width="8" height="8" rx="1" />
-              <rect x="2" y="12" width="8" height="8" rx="1" />
+              <rect x="4" y="2" width="7" height="7" rx="1" />
+              <rect x="13" y="2" width="7" height="7" rx="1" />
+              <rect x="4" y="11" width="7" height="7" rx="1" />
+              <rect x="13" y="15" width="7" height="7" rx="1" />
             </svg>
           </button>
 
@@ -447,29 +451,177 @@ export default function BookshelfScreen() {
           }}
         >
           {books.length === 0 ? (
-            /* ── Empty state ── */
-            <div
+            /* ── Empty state — rich landing ── */
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2 }}
               style={{
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '70vh',
+                height: '75vh',
+                gap: '40px',
+                textAlign: 'center',
+                padding: '0 24px',
               }}
             >
-              <p
+              {/* Decorative gold line */}
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: 60 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                style={{ height: '1px', backgroundColor: '#C9A96E' }}
+              />
+
+              {/* Main message */}
+              <div>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontWeight: 300,
+                    fontSize: '28px',
+                    color: '#F5F0E8',
+                    letterSpacing: '0.15em',
+                    margin: 0,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Tu primera aventura te espera
+                </motion.p>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                  style={{
+                    fontFamily: "'Josefin Sans', sans-serif",
+                    fontWeight: 200,
+                    fontSize: '12px',
+                    letterSpacing: '0.35em',
+                    textTransform: 'uppercase',
+                    color: '#8A8478',
+                    marginTop: '16px',
+                  }}
+                >
+                  Crea tu primer album o explora los juegos
+                </motion.p>
+              </div>
+
+              {/* CTA button */}
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+                onClick={() => setShowCreator(true)}
                 style={{
                   fontFamily: "'Josefin Sans', sans-serif",
-                  fontWeight: 200,
-                  fontSize: '14px',
-                  letterSpacing: '0.4em',
+                  fontWeight: 300,
+                  fontSize: '12px',
+                  letterSpacing: '0.35em',
                   textTransform: 'uppercase',
-                  color: '#C9A96E',
-                  animation: 'empty-pulse 3s ease-in-out infinite',
+                  color: '#0A0A0A',
+                  backgroundColor: '#C9A96E',
+                  border: 'none',
+                  padding: '14px 40px',
+                  cursor: 'pointer',
+                  transition: 'all 400ms cubic-bezier(0.645, 0.045, 0.355, 1)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#D4B87A';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(201,169,110,0.3)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#C9A96E';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
               >
-                YOUR FIRST JOURNEY AWAITS
-              </p>
-            </div>
+                + Crear Album
+              </motion.button>
+
+              {/* Quick links row */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 1.1 }}
+                style={{
+                  display: 'flex',
+                  gap: '32px',
+                  alignItems: 'center',
+                }}
+              >
+                {[
+                  { label: 'Puzzle', route: '/puzzle', icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="2" width="9" height="9" rx="1" />
+                      <rect x="13" y="2" width="9" height="9" rx="1" />
+                      <rect x="2" y="13" width="9" height="9" rx="1" />
+                      <rect x="13" y="13" width="9" height="9" rx="1" />
+                    </svg>
+                  )},
+                  { label: 'Tetris', route: '/tetris', icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <rect x="4" y="2" width="7" height="7" rx="1" />
+                      <rect x="13" y="2" width="7" height="7" rx="1" />
+                      <rect x="4" y="11" width="7" height="7" rx="1" />
+                      <rect x="13" y="15" width="7" height="7" rx="1" />
+                    </svg>
+                  )},
+                  { label: 'Dashboard', route: '/dashboard', icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="2" y1="12" x2="22" y2="12" />
+                      <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+                    </svg>
+                  )},
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => navigate(item.route)}
+                    style={{
+                      background: 'none',
+                      border: '1px solid rgba(201,169,110,0.2)',
+                      cursor: 'pointer',
+                      padding: '12px 20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      color: '#8A8478',
+                      fontFamily: "'Josefin Sans', sans-serif",
+                      fontWeight: 300,
+                      fontSize: '11px',
+                      letterSpacing: '0.2em',
+                      textTransform: 'uppercase',
+                      transition: 'all 400ms ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#C9A96E';
+                      e.currentTarget.style.color = '#C9A96E';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(201,169,110,0.2)';
+                      e.currentTarget.style.color = '#8A8478';
+                    }}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </button>
+                ))}
+              </motion.div>
+
+              {/* Bottom decorative line */}
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: 40 }}
+                transition={{ duration: 0.6, delay: 1.3 }}
+                style={{ height: '1px', backgroundColor: 'rgba(201,169,110,0.3)' }}
+              />
+            </motion.div>
           ) : (
             /* ── Sortable spines ── */
             <DndContext
