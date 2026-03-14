@@ -42,6 +42,8 @@ export default function BookshelfScreen() {
   const [addBtnHovered, setAddBtnHovered] = useState(false);
   const [globeHovered, setGlobeHovered] = useState(false);
   const [importHovered, setImportHovered] = useState(false);
+  const [puzzleHovered, setPuzzleHovered] = useState(false);
+  const [tetrisHovered, setTetrisHovered] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -322,6 +324,68 @@ export default function BookshelfScreen() {
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          </button>
+
+          {/* Puzzle */}
+          <button
+            onClick={() => navigate('/puzzle')}
+            onMouseEnter={() => setPuzzleHovered(true)}
+            onMouseLeave={() => setPuzzleHovered(false)}
+            title="Puzzle"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+              transition: 'opacity 300ms ease',
+              opacity: puzzleHovered ? 1 : 0.5,
+            }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={puzzleHovered ? '#C9A96E' : '#8A8478'}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ transition: 'stroke 300ms ease' }}
+            >
+              <path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 01-.837.276c-.47-.07-.802-.452-.968-.878a2.074 2.074 0 00-1.941-1.313c-1.13 0-2.049.919-2.049 2.049 0 .53-.21 1.04-.586 1.414l-.013.014A2 2 0 0111.878 18H9.122a2 2 0 01-1.414-.586l-.013-.014a2 2 0 01-.586-1.414c0-1.13-.919-2.049-2.049-2.049a2.074 2.074 0 00-1.941 1.313c-.166.426-.498.808-.968.878a.98.98 0 01-.837-.276L.586 15.124A2.41 2.41 0 010 13.42c0-.617.236-1.234.706-1.704L2.272 10.15a1.007 1.007 0 00.29-.878A2.074 2.074 0 00.62 7.331C.49 7.261.374 7.125.374 6.948V5.102c0-.177.116-.313.245-.383A2.074 2.074 0 002.56 2.777a1.007 1.007 0 00-.289-.878L.706 .331A2.41 2.41 0 010 .331" />
+            </svg>
+          </button>
+
+          {/* Tetris */}
+          <button
+            onClick={() => navigate('/tetris')}
+            onMouseEnter={() => setTetrisHovered(true)}
+            onMouseLeave={() => setTetrisHovered(false)}
+            title="Tetris"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+              transition: 'opacity 300ms ease',
+              opacity: tetrisHovered ? 1 : 0.5,
+              fontFamily: "'Josefin Sans', sans-serif",
+              fontSize: '18px',
+              color: tetrisHovered ? '#C9A96E' : '#8A8478',
+              lineHeight: 1,
+            }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill={tetrisHovered ? '#C9A96E' : '#8A8478'}
+              style={{ transition: 'fill 300ms ease' }}
+            >
+              <rect x="2" y="2" width="8" height="8" rx="1" />
+              <rect x="12" y="2" width="8" height="8" rx="1" />
+              <rect x="2" y="12" width="8" height="8" rx="1" />
             </svg>
           </button>
 

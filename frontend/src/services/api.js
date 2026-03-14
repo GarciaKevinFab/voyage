@@ -87,6 +87,10 @@ export function searchMusic(query, limit = 8) {
   return api.get('/api/music/search', { params: { q: query, limit } }).then((r) => r.data);
 }
 
+export function getDestinationMusic(city, country) {
+  return searchMusic(`${city} ${country} music`, 5);
+}
+
 // ── Export / Import ────────────────────────────────────
 
 export function exportPDF(bookId) {

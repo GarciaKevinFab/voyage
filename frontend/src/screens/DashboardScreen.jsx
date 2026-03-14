@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import useBookStore from '../store/bookStore';
 import { getBooks } from '../services/api';
 import LoadingOverlay from '../components/shared/LoadingOverlay';
+import WorldMap from '../components/dashboard/WorldMap';
 import { TRAVEL_QUOTES, SPINE_COLORS } from '../utils/constants';
 
 /* ── Easing ────────────────────────────────────────────── */
@@ -138,12 +139,54 @@ function BookSpine({ book, index, onClick }) {
   );
 }
 
+/* ── Nav icon button ───────────────────────────────────── */
+function NavIcon({ icon, label, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      title={label}
+      style={{
+        background: 'none',
+        border: '1px solid rgba(201,169,110,0.3)',
+        cursor: 'pointer',
+        padding: '10px 14px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '6px',
+        transition: 'all 400ms',
+        color: '#C9A96E',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = '#C9A96E';
+        e.currentTarget.style.background = 'rgba(201,169,110,0.08)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(201,169,110,0.3)';
+        e.currentTarget.style.background = 'none';
+      }}
+    >
+      <span style={{ fontSize: '20px', lineHeight: 1 }}>{icon}</span>
+      <span
+        style={{
+          fontFamily: "'Josefin Sans', sans-serif",
+          fontWeight: 200,
+          fontSize: '8px',
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color: 'rgba(201,169,110,0.7)',
+        }}
+      >
+        {label}
+      </span>
+    </button>
+  );
+}
+
 export default function DashboardScreen() {
   const navigate = useNavigate();
   const { books, setBooks } = useBookStore();
   const [loading, setLoading] = useState(true);
-  const mapContainerRef = useRef(null);
-  const mapRef = useRef(null);
 
   /* ── Load books ──────────────────────────────────────── */
   useEffect(() => {
@@ -198,73 +241,6 @@ export default function DashboardScreen() {
     };
   }, [books]);
 
-  /* ── Map markers ─────────────────────────────────────── */
-  const markers = useMemo(() => {
-    return books
-      .filter((b) => b.latitude && b.longitude)
-      .map((b) => ({
-        lat: b.latitude,
-        lng: b.longitude,
-        label: b.city || b.country || '',
-      }));
-  }, [books]);
-
-  /* ── Leaflet map ─────────────────────────────────────── */
-  useEffect(() => {
-    if (loading || !mapContainerRef.current || mapRef.current) return;
-    if (typeof window === 'undefined' || !window.L) return;
-
-    const L = window.L;
-    const map = L.map(mapContainerRef.current, {
-      zoomControl: false,
-      attributionControl: false,
-      scrollWheelZoom: false,
-      dragging: false,
-    }).setView([20, 0], 2);
-
-    L.tileLayer(
-      'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-      { maxZoom: 18 }
-    ).addTo(map);
-
-    const goldIcon = L.divIcon({
-      className: '',
-      html: `<div style="
-        width: 10px; height: 10px;
-        background: #C9A96E;
-        border: 2px solid #A07840;
-        border-radius: 50%;
-        box-shadow: 0 0 8px rgba(201,169,110,0.5);
-      "></div>`,
-      iconSize: [14, 14],
-      iconAnchor: [7, 7],
-    });
-
-    const bounds = [];
-    markers.forEach((m) => {
-      const latlng = [m.lat, m.lng];
-      bounds.push(latlng);
-      L.marker(latlng, { icon: goldIcon })
-        .bindTooltip(m.label, {
-          className: 'voyage-tooltip',
-          direction: 'top',
-          offset: [0, -10],
-        })
-        .addTo(map);
-    });
-
-    if (bounds.length > 0) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 6 });
-    }
-
-    mapRef.current = map;
-
-    return () => {
-      map.remove();
-      mapRef.current = null;
-    };
-  }, [loading, markers]);
-
   /* ── Render ──────────────────────────────────────────── */
   if (loading) {
     return <LoadingOverlay isVisible quotes={TRAVEL_QUOTES} />;
@@ -275,84 +251,107 @@ export default function DashboardScreen() {
     .slice(0, 3);
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: '#F5F0E8',
-        padding: '60px 40px 80px',
-      }}
-    >
-      {/* ── Header ─────────────────────────────────────── */}
-      <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: LUXURY_EASE }}
-        style={{ textAlign: 'center', marginBottom: '64px' }}
+    <div style={{ minHeight: '100vh', backgroundColor: '#F5F0E8' }}>
+      {/* ── Dark header area with map ──────────────────── */}
+      <div
+        style={{
+          backgroundColor: '#0A0A0A',
+          padding: '40px 40px 60px',
+        }}
       >
-        <h1
+        {/* Top bar: title + nav icons */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: LUXURY_EASE }}
           style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontWeight: 300,
-            fontSize: '2.5rem',
-            letterSpacing: '0.6em',
-            color: '#0A0A0A',
-            textTransform: 'uppercase',
-            lineHeight: 1.6,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            maxWidth: '1200px',
+            margin: '0 auto 40px',
           }}
         >
-          TUS VIAJES
-        </h1>
+          <h1
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 300,
+              fontSize: '2.2rem',
+              letterSpacing: '0.6em',
+              color: '#F5F0E8',
+              textTransform: 'uppercase',
+              lineHeight: 1.6,
+              margin: 0,
+            }}
+          >
+            TUS VIAJES
+          </h1>
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <NavIcon
+              icon={'\u{1F9E9}'}
+              label="Puzzle"
+              onClick={() => navigate('/puzzle')}
+            />
+            <NavIcon
+              icon={'\u{1F3AE}'}
+              label="Tetris"
+              onClick={() => navigate('/tetris')}
+            />
+          </div>
+        </motion.div>
+
+        {/* Gold divider */}
         <div
           style={{
             width: '60px',
             height: '1px',
             backgroundColor: '#C9A96E',
-            margin: '20px auto 0',
+            margin: '0 auto 40px',
           }}
         />
-      </motion.header>
 
-      {/* ── Stats grid ─────────────────────────────────── */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-          gap: '48px',
-          maxWidth: '900px',
-          margin: '0 auto 80px',
-        }}
-      >
-        <StatItem number={stats.countries} label="Pa\u00edses visitados" delay={100} />
-        <StatItem number={stats.cities} label="Ciudades exploradas" delay={200} />
-        <StatItem number={stats.photos} label="Fotograf\u00edas" delay={300} />
-        <StatItem number={stats.songs} label="Canciones asignadas" delay={400} />
-        <StatItem number={stats.days} label="D\u00edas de viaje" delay={500} />
-        <StatItem number={stats.pages} label="P\u00e1ginas escritas" delay={600} />
+        {/* Hero world map */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: LUXURY_EASE }}
+          style={{
+            maxWidth: '1200px',
+            margin: '0 auto',
+          }}
+        >
+          <WorldMap
+            books={books}
+            onBookClick={(bookId) => navigate(`/book/${bookId}`)}
+            height="550px"
+          />
+        </motion.div>
       </div>
 
-      {/* ── World map ──────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        style={{
-          maxWidth: '1000px',
-          margin: '0 auto 80px',
-        }}
-      >
+      {/* ── Cream stats area ───────────────────────────── */}
+      <div style={{ padding: '80px 40px' }}>
         <div
-          ref={mapContainerRef}
           style={{
-            width: '100%',
-            height: '350px',
-            backgroundColor: '#FAFAF7',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+            gap: '48px',
+            maxWidth: '900px',
+            margin: '0 auto',
           }}
-        />
-      </motion.div>
+        >
+          <StatItem number={stats.countries} label="Pa\u00edses visitados" delay={100} />
+          <StatItem number={stats.cities} label="Ciudades exploradas" delay={200} />
+          <StatItem number={stats.photos} label="Fotograf\u00edas" delay={300} />
+          <StatItem number={stats.songs} label="Canciones asignadas" delay={400} />
+          <StatItem number={stats.days} label="D\u00edas de viaje" delay={500} />
+          <StatItem number={stats.pages} label="P\u00e1ginas escritas" delay={600} />
+        </div>
+      </div>
 
       {/* ── Recent books ───────────────────────────────── */}
       {recentBooks.length > 0 && (
-        <div style={{ maxWidth: '600px', margin: '0 auto 60px' }}>
+        <div style={{ maxWidth: '600px', margin: '0 auto 60px', padding: '0 40px' }}>
           <h2
             style={{
               fontFamily: "'Josefin Sans', sans-serif",
@@ -392,7 +391,7 @@ export default function DashboardScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 1 }}
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: 'center', paddingBottom: '80px' }}
       >
         <button
           onClick={() => navigate('/')}
